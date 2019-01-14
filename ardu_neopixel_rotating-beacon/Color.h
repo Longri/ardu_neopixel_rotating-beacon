@@ -15,8 +15,12 @@
    Created by Longri on 14.01.2019.
 */
 
+
+
 #ifndef ROTATING_BEACON_COLOR_H
 #define ROTATING_BEACON_COLOR_H
+
+class Color;
 
 class Color {
   private:
@@ -43,7 +47,12 @@ class Color {
       return this->value;
     }
 
+    static const Color RED;
+    static const Color ORANGE;
 
 };
+
+static const Color Color::RED = Color(255, 0, 0);
+static const Color Color::ORANGE = Color(255,50,0);
 
 #endif //ROTATING_BEACON_COLOR_H

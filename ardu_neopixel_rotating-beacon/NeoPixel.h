@@ -29,21 +29,27 @@
 class NeoPixel {
     Adafruit_NeoPixel pixels;
 
-    int umin = 60; 
+    int umin = 60;
 
     int pause = 1000; // 100 Millisekunden Pause bis zur Ansteuerung der nächsten LED.
+
+    Color color = Color::RED;
+
   public:
     NeoPixel(uint16_t numPixels, uint8_t pin, neoPixelType type) : pixels(numPixels, pin, type) {}
     void begin() {
       pixels.begin();
     }
 
+    void setColor(Color newColor) {
+      this->color = newColor;
+    }
 
 
     void loop() {
       Serial.println("NeoPixel Loop entry");
-      Color color(0, 0, 5);
-      pixels.setPixelColor(1, color); // Pixel1 leuchtet in der Farbe Grün
+     
+      pixels.setPixelColor(1, this->color); // Pixel1 leuchtet in der Farbe Grün
       pixels.show(); // Durchführen der Pixel-Ansteuerung
       delay (pause); // Pause, in dieser Zeit wird nichts verändert.
 

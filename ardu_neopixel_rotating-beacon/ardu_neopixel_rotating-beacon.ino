@@ -15,17 +15,20 @@
    Created by Longri on 14.01.2019.
 */
 
+#include "Color.h"
 #include "NeoPixel.h"
 
 
-NeoPixel neoPixel=NeoPixel(24, 9, NEO_GRB + NEO_KHZ800);
+NeoPixel neoPixel = NeoPixel(24, 9, NEO_GRB + NEO_KHZ800);
 
 
 void setup() {
-neoPixel.begin();
+  neoPixel.begin();
+  Color color(0, 5, 2);
+  neoPixel.setColor(color);
 }
 
 
 void loop() {
-    neoPixel.loop();
+  neoPixel.loop();
 }
