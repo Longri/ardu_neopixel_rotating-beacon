@@ -16,17 +16,21 @@
 */
 
 #include <Adafruit_NeoPixel.h>
+#include "Color.h"
 
 #ifdef __AVR__
 #include <avr/power.h>
 #endif
 
 
-#ifndef GREENHOUSE_NEOPIXEL_H
-#define GREENHOUSE_NEOPIXEL_H
+#ifndef ROTATING_BEACON_NEOPIXEL_H
+#define ROTATING_BEACON_NEOPIXEL_H
 
 class NeoPixel {
     Adafruit_NeoPixel pixels;
+
+    int umin = 60; 
+
     int pause = 1000; // 100 Millisekunden Pause bis zur Ansteuerung der nächsten LED.
   public:
     NeoPixel(uint16_t numPixels, uint8_t pin, neoPixelType type) : pixels(numPixels, pin, type) {}
@@ -38,7 +42,8 @@ class NeoPixel {
 
     void loop() {
       Serial.println("NeoPixel Loop entry");
-      pixels.setPixelColor(1, pixels.Color(0, 10, 0)); // Pixel1 leuchtet in der Farbe Grün
+      Color color(0, 0, 5);
+      pixels.setPixelColor(1, color); // Pixel1 leuchtet in der Farbe Grün
       pixels.show(); // Durchführen der Pixel-Ansteuerung
       delay (pause); // Pause, in dieser Zeit wird nichts verändert.
 
@@ -55,5 +60,4 @@ class NeoPixel {
 
 };
 
-
-#endif //GREENHOUSE_NEOPIXEL_H
+#endif //ROTATING_BEACON_NEOPIXEL_H
