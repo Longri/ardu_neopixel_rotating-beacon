@@ -19,13 +19,15 @@
 #include "NeoPixel.h"
 
 
-NeoPixel neoPixel = NeoPixel(24, 9, NEO_GRB + NEO_KHZ800);
+NeoPixel neoPixel = NeoPixel(24, 9, NEO_GRB + NEO_KHZ800, 5);
 
 
 void setup() {
   neoPixel.begin();
-  Color color(0, 5, 2);
+  Color color(1, 0, 0);
   neoPixel.setColor(color);
+  //neoPixel.setRPM(250);
+  neoPixel.setRPM(2);
 }
 
 

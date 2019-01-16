@@ -17,6 +17,7 @@
 
 #include <Adafruit_NeoPixel.h>
 #include "Color.h"
+#include "DoubleAnimator.h"
 
 #ifdef __AVR__
 #include <avr/power.h>
@@ -27,16 +28,32 @@
 #define ROTATING_BEACON_NEOPIXEL_H
 
 class NeoPixel {
+
     Adafruit_NeoPixel pixels;
+    uint16_t numPixels;
+    uint8_t pixelWidth;
+    int8_t* pixelArray;
+    uint16_t setPixel;
 
-    int umin = 60;
+    float loopDeltaTime = 0;
+    unsigned long lastLoopTime = millis();
 
-    int pause = 1000; // 100 Millisekunden Pause bis zur Ansteuerung der nächsten LED.
-
+    DoubleAnimator animator;
+    double dev = 0;
+    float duration = 2000.0f; //default 2sec (2000 msec)
     Color color = Color::RED;
 
+    void calculateDeltaTime() {
+      unsigned  long time = millis();
+      loopDeltaTime = (time - lastLoopTime);
+      lastLoopTime = time;
+    }
+
+
+
   public:
-    NeoPixel(uint16_t numPixels, uint8_t pin, neoPixelType type) : pixels(numPixels, pin, type) {}
+    NeoPixel(uint16_t numPixels, uint8_t pin, neoPixelType type, uint8_t pixelWidth)
+      : pixels(numPixels, pin, type), numPixels(numPixels), pixelWidth(pixelWidth), pixelArray(new int8_t[pixelWidth]) {}
     void begin() {
       pixels.begin();
     }
@@ -45,22 +62,33 @@ class NeoPixel {
       this->color = newColor;
     }
 
+    void setRPM(float rpm) {
+      duration = 60000.0f / rpm;
+    }
+
 
     void loop() {
-      Serial.println("NeoPixel Loop entry");
-     
-      pixels.setPixelColor(1, this->color); // Pixel1 leuchtet in der Farbe Grün
-      pixels.show(); // Durchführen der Pixel-Ansteuerung
-      delay (pause); // Pause, in dieser Zeit wird nichts verändert.
+      calculateDeltaTime();
 
-      // Zurücksetzen aller Pixelfarben auf Stufe "0" (aus)
-      pixels.setPixelColor(1, pixels.Color(0, 0, 0));
-      pixels.setPixelColor(2, pixels.Color(0, 0, 0));
-      pixels.setPixelColor(3, pixels.Color(0, 0, 0));
-      pixels.setPixelColor(4, pixels.Color(0, 0, 0));
-      pixels.setPixelColor(5, pixels.Color(0, 0, 0));
+      if (animator.isFinish()) {
+        animator.begin(duration, 0.0, 360.0); //one rotate (0 to 360 degrese) at 2 sec;
+      }
+      animator.update(loopDeltaTime);
+      dev = 360.0 / animator.getAct();
+      setPixel = (uint16_t)numPixels / dev;
+
+      //clear all Pixels
+      for (uint16_t i = 0; i < numPixels; i++) {
+        pixels.setPixelColor(i, Color::BLACK);
+      }
+
+      for (uint16_t i = 0; i < pixelWidth; i++) {
+        pixelArray[i] = setPixel - i;
+        if (pixelArray[i] < 0)pixelArray[i] += numPixels;
+        pixels.setPixelColor(pixelArray[i], this->color);
+      }
+
       pixels.show(); // Durchführen der Pixel-Ansteuerung
-      delay (pause); // Pause, die LEDs bleiben in dieser Zeit aus
 
     }
 
