@@ -19,18 +19,31 @@
 #include "NeoPixel.h"
 
 
-NeoPixel neoPixel = NeoPixel(24, 9, NEO_GRB + NEO_KHZ800, 5);
+//                           -  number of LED's
+//                           |   -  conected pin
+//                           |   |        -  NeoPixel Type
+//                           |   |        |               -  LED width for rotating
+//                           |   |        |               |
+NeoPixel neoPixel = NeoPixel(24, 9, NEO_GRB + NEO_KHZ800, 7);
 
 
 void setup() {
+  Serial.begin(9600);
+
+
   neoPixel.begin();
-  Color color(1, 0, 0);
+  Color color(5, 0, 0);
   neoPixel.setColor(color);
-  //neoPixel.setRPM(250);
-  neoPixel.setRPM(2);
+  //    neoPixel.setRPM(25);
+
+//    neoPixel.setColor(Color::ORANGE);
+  neoPixel.setRPM(180);
+
+  neoPixel.setBrightnessInput(A5, 450, 20);
 }
 
 
 void loop() {
+
   neoPixel.loop();
 }
