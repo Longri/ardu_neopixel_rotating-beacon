@@ -36,11 +36,9 @@ class NeoPixel {
     uint16_t lastFirstPixel;
     int8_t pixel;
 
-
     int brightnessPin = -1;
     int min, max;
     float lastBrightness = -1;
-
 
     float loopDeltaTime = 0;
     unsigned long lastLoopTime = millis();
@@ -54,6 +52,7 @@ class NeoPixel {
     Color color = Color::RED;
     Color brightnesColor = Color::BLACK;
 
+    bool ON = false;
 
     float linearInterpolation(float min, float max, float min2, float max2, float value) {
       float range1 = max - min;
@@ -73,13 +72,8 @@ class NeoPixel {
     bool calculateDeltaTime() {
       unsigned  long time = millis();
       loopDeltaTime = (time - lastLoopTime);
-      if (loopDeltaTime < 33.579) { // 29 fps
-        Serial.print("loop delta time");
-        return true;
-      }
+      if (loopDeltaTime < 33.579)  return true; // 29 fps
       lastLoopTime = time;
-      Serial.print("  delta time   ");
-      Serial.println(loopDeltaTime);
       return false;
     }
 
@@ -91,18 +85,10 @@ class NeoPixel {
       if (lastBrightness != brightness) {
         //calculate Color value with brightness changes
         lastBrightness = brightness;
-
         int8_t r = ((color & 0xff0000) >> 16) * brightness;
         int8_t g = ((color & 0xff00) >> 8) * brightness;
         int8_t b = (color & 0xff) * brightness;
-
         brightnesColor = Color(r, g, b);
-
-        Serial.print("brightness: ");
-        Serial.print(analogValue);
-        Serial.print("  /   ");
-        Serial.println(brightness);
-
       }
     }
 
@@ -112,6 +98,16 @@ class NeoPixel {
 
     void begin() {
       pixels.begin();
+    }
+
+    void on() {
+      ON = true;
+    }
+
+    void off() {
+      ON = false;
+      pixels.clear();
+
     }
 
     void setColor(Color newColor) {

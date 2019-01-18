@@ -45,12 +45,14 @@ class Color {
       return this->value;
     }
 
+    static const Color GREEN;
     static const Color RED;
     static const Color ORANGE;
     static const Color BLACK;
 
 };
 
+static const Color Color::GREEN = Color(0, 255, 0);
 static const Color Color::RED = Color(255, 0, 0);
 static const Color Color::ORANGE = Color(255, 50, 0);
 static const Color Color::BLACK = Color(0, 0, 0);
