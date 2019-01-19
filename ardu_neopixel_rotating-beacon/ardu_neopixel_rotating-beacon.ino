@@ -17,6 +17,7 @@
 
 #include "Color.h"
 #include "NeoPixel.h"
+#include "Beacon.h"
 
 
 //                           -  number of LED's
@@ -26,6 +27,8 @@
 //                           |   |        |               |
 NeoPixel neoPixel = NeoPixel(24, 9, NEO_GRB + NEO_KHZ800, 7);
 
+Beacon beacon = Beacon(24, 9, NEO_GRB + NEO_KHZ800, 7);
+
 
 void setup() {
   Serial.begin(9600);
@@ -34,9 +37,9 @@ void setup() {
   neoPixel.begin();
   Color color(5, 0, 0);
   neoPixel.setColor(color);
-  //    neoPixel.setRPM(25);
+  neoPixel.setRPM(25);
 
-//    neoPixel.setColor(Color::ORANGE);
+  //      neoPixel.setColor(Color::ORANGE);
   neoPixel.setRPM(180);
 
   neoPixel.setBrightnessInput(A5, 450, 20);
@@ -44,6 +47,16 @@ void setup() {
 
 
 void loop() {
+  beacon.loop();
 
-  neoPixel.loop();
+  unsigned  long time = millis();
+
+//  Serial.print("time: ");
+//  Serial.println(time);
+
+  if (time < 1000)beacon.setState(OFF);
+  if (time > 1000)beacon.setState(ROTATING_ORANGE);
+if (time > 2000)beacon.setState(OFF);
+
+
 }
