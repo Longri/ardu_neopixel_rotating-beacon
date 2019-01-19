@@ -15,64 +15,64 @@
    Created by Longri on 17.01.2019.
 */
 
-#include <Adafruit_NeoPixel.h>
-#include "State.h"
-//#include "Color.h"
-#include "NeoPixel.h"
-
-
 #ifndef BEACON_H
 #define BEACON_H
 
-class Beacon {
+#include "State.h"
 
-    NeoPixel rotate;
-    State state = State::OFF;
+class Beacon {
+    NeoPixel rotatePixel;
+    BeaconState state = BeaconState::OFF;
 
   public:
-    Beacon(uint16_t numPixels, uint8_t pin, neoPixelType type, uint8_t pixelWidth)
-    : rotate(numPixels, pin, type, pixelWidth)
-    {}
 
+    Beacon(uint16_t numPixels, uint8_t pin, neoPixelType type, uint8_t pixelWidth): rotatePixel(NeoPixel(numPixels, pin, type, pixelWidth)) {
+      rotatePixel.begin();
+      Color color(5, 0, 0);
+      rotatePixel.setColor(color);
+      rotatePixel.setRPM(25);
+      rotatePixel.setRPM(180);
+      rotatePixel.setBrightnessInput(A5, 450, 20);
+    }
 
-    void setState(State newState) {
+    void setState(BeaconState newState) {
       switch (newState) {
-        case State::OFF:
-          rotate.off();
+        case OFF:
+          Serial.println("setState OFF");
+          rotatePixel.off();
           break;
-        case State::ROTATING_ORANGE:
-        case State::ROTATING_RED:
-        case State::ROTATING_GREEN:
-          rotate.on();
+        case ROTATING_ORANGE:
+        case ROTATING_RED:
+        case ROTATING_GREEN:
+          Serial.println("setState Rotate");
+          rotatePixel.on();
           switch (newState) {
-            case State::ROTATING_ORANGE:
-              rotate.setColor(Color::ORANGE);
+            case ROTATING_ORANGE:
+              rotatePixel.setColor(Color::ORANGE);
               break;
-            case State::ROTATING_RED:
-             rotate.setColor(Color::RED);
+            case ROTATING_RED:
+              rotatePixel.setColor(Color::RED);
               break;
-            case State::ROTATING_GREEN:
-             rotate.setColor(Color::GREEN);
+            case ROTATING_GREEN:
+              rotatePixel.setColor(Color::GREEN);
               break;
           }
           break;
       }
+      this->state = newState;
     }
 
     void loop() {
-
       switch (this->state) {
-        case State::OFF:
+        case OFF:
           return;
-        case State::ROTATING_ORANGE:
-        case State::ROTATING_RED:
-        case State::ROTATING_GREEN:
-          rotate.loop();
+        case ROTATING_ORANGE:
+        case ROTATING_RED:
+        case ROTATING_GREEN:
+          rotatePixel.loop();
           break;
       }
-
     }
-
 
 };
 

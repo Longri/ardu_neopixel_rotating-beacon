@@ -17,7 +17,7 @@
 #ifndef ROTATING_BEACON_STATE_H
 #define ROTATING_BEACON_STATE_H
 
-enum State{
+enum BeaconState{
   ROTATING_ORANGE,
   ROTATING_RED,
   ROTATING_GREEN,
@@ -35,6 +35,6 @@ enum State{
   ON_GREEN,
 
   OFF
-}
+};
 
 #endif //ROTATING_BEACON_STATE_H

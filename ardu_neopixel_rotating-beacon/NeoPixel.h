@@ -107,6 +107,7 @@ class NeoPixel {
     void off() {
       ON = false;
       pixels.clear();
+      pixels.show();
 
     }
 
