@@ -20,6 +20,7 @@
 #include "Beacon.h"
 #include "StepSequence.h"
 #include "Timer.h"
+#include "SequenceFunctionArray.h"
 
 
 //                     -  number of LED's
@@ -34,11 +35,35 @@ StepSequence sequence = StepSequence();
 Timer t1;
 Timer t2;
 Timer t3;
+Timer t4;
 
 void setup() {
   Serial.begin(9600);
-
   beacon.setBrightnessInput(A5, 450, 20);
+
+
+  // Sequence Step1   #######################
+  sequence.add([]() { //Step1: continuity contdition
+    return t3;
+  }, []() {           //Step1: step work
+    t4.start(MINUTE, 0.1);
+    beacon.setState(ROTATING_GREEN);
+    return true;
+  });
+  // Sequence Step1   #######################
+
+  // Sequence Step2   #######################
+  sequence.add([]() { //Step2: continuity contdition
+    return t4;
+  }, []() {           //Step2: step work
+    t1.reset();
+    t2.reset();
+    t3.reset();
+    t4.reset();
+    beacon.setState(OFF);
+    return true;
+  });
+  // Sequence Step2   #######################
 }
 
 
@@ -57,11 +82,12 @@ void loop() {
       if (!t3) {
         t3.start(MINUTE, 0.1);
       } else {
-        t1.reset();
-        t2.reset();
-        t3.reset();
+        //        t1.reset();
+        //        t2.reset();
+        //        t3.reset();
       }
       beacon.setState(OFF);
+      sequence.start();
     }
   }
 

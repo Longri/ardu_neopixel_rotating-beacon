@@ -17,10 +17,21 @@
 #ifndef ROTATING_BEACON_STTEPSEQUENCE_H
 #define ROTATING_BEACON_STTEPSEQUENCE_H
 
+
+#include "SequenceFunctionArray.h"
+#include "Timer.h"
+#include <Function.h>
+
+
+
 class StepSequence {
   private:
 
     bool run = false;
+    int step = 0;
+
+    SequenceFunctionArray  continuityContditions;
+    SequenceFunctionArray  stepWorks;
 
   public:
 
@@ -28,13 +39,38 @@ class StepSequence {
 
     void start() {
       this->run = true;
+      if (step == 0)step = 1;
     }
 
     void stop() {
       this->run = false;
     }
 
-    void loop() {}
+    void reset() {
+      this->step = 0;
+    }
+
+    void loop() {
+      if (!this->run)return;
+
+      // get act step continuity contdition and ask
+      if (continuityContditions[this->step]) {
+        // continuity condition satisfied, call step work and set new Step
+        step++;
+        stepWorks[this->step]();
+      }
+
+      // break sequens with last Step
+      if (this->step >= stepWorks.getSize()) {
+        stop();
+        reset();
+      }
+    }
+
+    void add(vl::Func<bool ()> const &continuityContdition, vl::Func<bool ()> const &stepWork) {
+      continuityContditions.add(continuityContdition);
+      stepWorks.add(stepWork);
+    }
 };
 
 #endif //ROTATING_BEACON_STTEPSEQUENCE_H
