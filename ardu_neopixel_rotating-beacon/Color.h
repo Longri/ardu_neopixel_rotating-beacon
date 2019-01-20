@@ -20,6 +20,8 @@
 #ifndef ROTATING_BEACON_COLOR_H
 #define ROTATING_BEACON_COLOR_H
 
+#include <stdint.h>
+
 class Color {
   private:
 
@@ -45,16 +47,16 @@ class Color {
       return this->value;
     }
 
-    static const Color GREEN;
-    static const Color RED;
-    static const Color ORANGE;
-    static const Color BLACK;
+//    static const Color GREEN;
+//    static const Color RED;
+//    static const Color ORANGE;
+//    static const Color BLACK;
 
 };
 
-static const Color Color::GREEN = Color(0, 255, 0);
-static const Color Color::RED = Color(255, 0, 0);
-static const Color Color::ORANGE = Color(255, 50, 0);
-static const Color Color::BLACK = Color(0, 0, 0);
+//static const Color Color::GREEN = Color(0, 255, 0);
+//static const Color Color::RED = Color(255, 0, 0);
+//static const Color Color::ORANGE = Color(255, 50, 0);
+//static const Color Color::BLACK = Color(0, 0, 0);
 
 #endif //ROTATING_BEACON_COLOR_H

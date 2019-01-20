@@ -22,7 +22,7 @@
 
 class Beacon {
     NeoPixel rotatePixel;
-    BeaconState state = BeaconState::OFF;
+    BeaconState state = OFF;
 
   public:
 
@@ -30,11 +30,13 @@ class Beacon {
       rotatePixel.begin();
       Color color(5, 0, 0);
       rotatePixel.setColor(color);
-      rotatePixel.setRPM(25);
       rotatePixel.setRPM(180);
-      rotatePixel.setBrightnessInput(A5, 450, 20);
     }
 
+   void setBrightnessInput(int pin, int minValue, int maxValue) {
+      rotatePixel.setBrightnessInput(A5, 450, 20);
+    }
+    
     void setState(BeaconState newState) {
       switch (newState) {
         case OFF:
@@ -48,13 +50,13 @@ class Beacon {
           rotatePixel.on();
           switch (newState) {
             case ROTATING_ORANGE:
-              rotatePixel.setColor(Color::ORANGE);
+              rotatePixel.setColor(Color(255, 50, 0));
               break;
             case ROTATING_RED:
-              rotatePixel.setColor(Color::RED);
+              rotatePixel.setColor(Color(255,0,0));
               break;
             case ROTATING_GREEN:
-              rotatePixel.setColor(Color::GREEN);
+              rotatePixel.setColor(Color(0,255,0));
               break;
           }
           break;

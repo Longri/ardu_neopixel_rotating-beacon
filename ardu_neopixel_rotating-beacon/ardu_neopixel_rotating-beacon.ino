@@ -18,45 +18,48 @@
 #include "Color.h"
 #include "NeoPixel.h"
 #include "Beacon.h"
+#include "StepSequence.h"
+#include "Timer.h"
 
 
-//                           -  number of LED's
-//                           |   -  conected pin
-//                           |   |        -  NeoPixel Type
-//                           |   |        |               -  LED width for rotating
-//                           |   |        |               |
-NeoPixel neoPixel = NeoPixel(24, 9, NEO_GRB + NEO_KHZ800, 7);
-
+//                     -  number of LED's
+//                     |   -  conected pin
+//                     |   |        -  NeoPixel Type
+//                     |   |        |               -  LED width for rotating
+//                     |   |        |               |
 Beacon beacon = Beacon(24, 9, NEO_GRB + NEO_KHZ800, 7);
 
+
+StepSequence sequence = StepSequence();
+Timer t1;
+Timer t2;
+Timer t3;
 
 void setup() {
   Serial.begin(9600);
 
-
-  neoPixel.begin();
-  Color color(5, 0, 0);
-  neoPixel.setColor(color);
-  neoPixel.setRPM(25);
-
-  //      neoPixel.setColor(Color::ORANGE);
-  neoPixel.setRPM(180);
-
-  neoPixel.setBrightnessInput(A5, 450, 20);
+  beacon.setBrightnessInput(A5, 450, 20);
 }
 
 
 void loop() {
   beacon.loop();
+  sequence.loop();
 
-  unsigned  long time = millis();
-
-//  Serial.print("time: ");
-//  Serial.println(time);
-
-  if (time < 1000)beacon.setState(OFF);
-  if (time > 1000)beacon.setState(ROTATING_ORANGE);
-if (time > 2000)beacon.setState(OFF);
-
+  if (!t1) {
+    Serial.println("start t1");
+    t1.start(MILLI, 1000);
+    beacon.setState(OFF);
+  }else{
+    Serial.println("t1 abgelaufen");
+    if(!t2){
+      Serial.println("start t1");
+      t2.start(SECOND,1);
+      beacon.setState(ROTATING_RED);
+    }else{
+      Serial.println("t2 abgelaufen");
+      beacon.setState(OFF);
+    }
+  }
 
 }

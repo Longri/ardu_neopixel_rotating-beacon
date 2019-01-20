@@ -37,17 +37,18 @@ set(${CMAKE_PROJECT_NAME}_AFLAGS -v)
 set(pro.upload.speed 57600)
 
 
-include_directories(Blink)
+include_directories(ardu_neopixel_rotating-beacon)
 set(SOURCE_FILES
-        Logger.cpp
-        LoggerFactory.cpp
-        TestClass.cpp
+        ardu_neopixel_rotating-beacon/Adafruit_NeoPixel.cpp
         )
 
 set(HEADERS_FILES
-        Logger.h
-        LoggerFactory.h
-        TestClass.h
+        ardu_neopixel_rotating-beacon/Color.h
+        ardu_neopixel_rotating-beacon/DoubleAnimator.h
+        ardu_neopixel_rotating-beacon/NeoPixel.h
+        ardu_neopixel_rotating-beacon/State.h
+        ardu_neopixel_rotating-beacon/Beacon.h
+        ardu_neopixel_rotating-beacon/Adafruit_NeoPixel.h
         )
 set(${CMAKE_PROJECT_NAME}_HDRS ${HEADERS_FILES})
 set(${CMAKE_PROJECT_NAME}_SRCS ${SOURCE_FILES})

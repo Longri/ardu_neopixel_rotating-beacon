@@ -15,7 +15,7 @@
    Created by Longri on 14.01.2019.
 */
 
-#include <Adafruit_NeoPixel.h>
+#include "Adafruit_NeoPixel.h"
 #include "Color.h"
 #include "DoubleAnimator.h"
 
@@ -49,8 +49,8 @@ class NeoPixel {
     float brightnessMin = 0.1f;
     float brightnessMax = 1.0f;
 
-    Color color = Color::RED;
-    Color brightnesColor = Color::BLACK;
+    Color color=Color(255,0,0);
+    Color brightnesColor = Color(0,0,0);
 
     bool ON = false;
 
