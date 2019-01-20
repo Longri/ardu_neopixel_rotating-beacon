@@ -47,17 +47,20 @@ void loop() {
   sequence.loop();
 
   if (!t1) {
-    Serial.println("start t1");
     t1.start(MILLI, 1000);
     beacon.setState(OFF);
-  }else{
-    Serial.println("t1 abgelaufen");
-    if(!t2){
-      Serial.println("start t1");
-      t2.start(SECOND,1);
+  } else {
+    if (!t2) {
+      t2.start(SECOND, 1);
       beacon.setState(ROTATING_RED);
-    }else{
-      Serial.println("t2 abgelaufen");
+    } else {
+      if (!t3) {
+        t3.start(MINUTE, 0.1);
+      } else {
+        t1.reset();
+        t2.reset();
+        t3.reset();
+      }
       beacon.setState(OFF);
     }
   }

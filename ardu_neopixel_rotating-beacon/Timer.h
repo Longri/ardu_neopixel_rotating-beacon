@@ -30,7 +30,12 @@ class Timer {
 
   public:
 
-    void start(Unit unit, int value) {
+    void reset() {
+      this->durationEnd = 0;
+      this->running = false;
+    }
+
+    void start(Unit unit, double value) {
       if (this->running) return;
       this->running = true;
       unsigned  long now = millis();
@@ -40,16 +45,16 @@ class Timer {
           durationEnd = now + value;
           break;
         case SECOND:
-          durationEnd = now + (value * 1000);
+          durationEnd = now + ((int)(value * 1000.0));
           break;
         case MINUTE:
-          durationEnd = now + (value * 1000 * 60);
+          durationEnd = now + ((int)(value * 1000.0 * 60.0));
           break;
         case HOUR:
-          durationEnd = now + (value * 1000 * 60 * 60);
+          durationEnd = now + ((int)(value * 1000.0 * 60.0 * 60.0));
           break;
         case DAY:
-          durationEnd = now + (value * 1000 * 60 * 60 * 24);
+          durationEnd = now + ((int)(value * 1000.0 * 60.0 * 60.0 * 24.0));
           break;
       }
     }
