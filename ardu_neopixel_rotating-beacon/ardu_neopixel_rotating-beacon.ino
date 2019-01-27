@@ -48,7 +48,6 @@ void setup() {
   }, []() {           //Step1: step work
     t4.start(MINUTE, 0.1);
     beacon.setState(ROTATING_GREEN);
-    return true;
   });
   // Sequence Step1   #######################
 
@@ -61,7 +60,6 @@ void setup() {
     t3.reset();
     t4.reset();
     beacon.setState(OFF);
-    return true;
   });
   // Sequence Step2   #######################
 }
@@ -87,7 +85,7 @@ void loop() {
         //        t3.reset();
       }
       beacon.setState(OFF);
-      sequence.start();
+//      sequence.start();
     }
   }
 

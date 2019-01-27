@@ -29,9 +29,33 @@ class StepSequence {
 
     bool run = false;
     int step = 0;
+    int stepSize = 0;
 
-    SequenceFunctionArray  continuityContditions;
-    SequenceFunctionArray  stepWorks;
+    typedef void (*WorkFuncPtr)(void);
+    volatile WorkFuncPtr  workFunktions[10];
+
+
+    void SetCallback(int idx, volatile WorkFuncPtr wf) {
+      workFunktions[idx] = wf;
+    }
+    void TriggerCallback(int idx) {
+      if (workFunktions[idx]) {
+        workFunktions[idx]();
+      }
+    }
+
+    typedef bool (*ContinusFuncPtr)(void);
+    volatile ContinusFuncPtr  continusFunktions[10];
+
+
+    void SetContinusFunktion(int idx, volatile ContinusFuncPtr cf) {
+      continusFunktions[idx] = cf;
+    }
+    bool AskContinus(int idx) {
+      if (continusFunktions[idx]) {
+        return continusFunktions[idx]();
+      }
+    }
 
   public:
 
@@ -53,24 +77,27 @@ class StepSequence {
     void loop() {
       if (!this->run)return;
 
-      // get act step continuity contdition and ask
-      if (continuityContditions[this->step]) {
+      //      // get act step continuity contdition and ask
+      if (AskContinus(this->step)) {
         // continuity condition satisfied, call step work and set new Step
+        TriggerCallback(this->step);
         step++;
-        stepWorks[this->step]();
       }
 
       // break sequens with last Step
-      if (this->step >= stepWorks.getSize()) {
+      if (this->step >= this->stepSize) {
         stop();
         reset();
       }
     }
 
-    void add(vl::Func<bool ()> const &continuityContdition, vl::Func<bool ()> const &stepWork) {
-      continuityContditions.add(continuityContdition);
-      stepWorks.add(stepWork);
+    void add(volatile WorkFuncPtr wf, volatile ContinusFuncPtr cf) {
+      SetCallback(stepSize, wf)   ;
+      SetContinusFunktion(stepSize, cf);
+      stepSize++;
     }
+
+
 };
 
 #endif //ROTATING_BEACON_STTEPSEQUENCE_H
