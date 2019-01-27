@@ -19,6 +19,7 @@
 #define BEACON_H
 
 #include "State.h"
+#include "Color.h"
 
 class Beacon {
     NeoPixel rotatePixel;
@@ -33,10 +34,10 @@ class Beacon {
       rotatePixel.setRPM(180);
     }
 
-   void setBrightnessInput(int pin, int minValue, int maxValue) {
+    void setBrightnessInput(int pin, int minValue, int maxValue) {
       rotatePixel.setBrightnessInput(A5, 450, 20);
     }
-    
+
     void setState(BeaconState newState) {
       switch (newState) {
         case OFF:
@@ -50,13 +51,13 @@ class Beacon {
           rotatePixel.on();
           switch (newState) {
             case ROTATING_ORANGE:
-              rotatePixel.setColor(Color(255, 50, 0));
+              rotatePixel.setColor(Color::ORANGE);
               break;
             case ROTATING_RED:
-              rotatePixel.setColor(Color(255,0,0));
+              rotatePixel.setColor(Color::RED);
               break;
             case ROTATING_GREEN:
-              rotatePixel.setColor(Color(0,255,0));
+              rotatePixel.setColor(Color::GREEN);
               break;
           }
           break;

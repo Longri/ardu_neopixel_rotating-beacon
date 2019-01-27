@@ -44,7 +44,7 @@ class StepSequence {
       }
     }
 
-    typedef bool (*ContinusFuncPtr)(void);
+    typedef bool (*ContinusFuncPtr)();
     volatile ContinusFuncPtr  continusFunktions[10];
 
 
@@ -53,7 +53,13 @@ class StepSequence {
     }
     bool AskContinus(int idx) {
       if (continusFunktions[idx]) {
-        return continusFunktions[idx]();
+        ContinusFuncPtr ptr = continusFunktions[idx];
+        bool continusResult =  ptr();
+        Serial.print("AskContinus result for Step:");
+        Serial.print(idx);
+        Serial.print(" is:");
+        Serial.println(continusResult);
+        return continusResult;
       }
     }
 
@@ -61,16 +67,25 @@ class StepSequence {
 
     StepSequence() {}
 
+    bool isRunning() {
+      return this->run;
+    }
+
     void start() {
+      Serial.println("");
+      Serial.println("");
+      Serial.println("START");
       this->run = true;
       if (step == 0)step = 1;
     }
 
     void stop() {
+      Serial.println("STOP");
       this->run = false;
     }
 
     void reset() {
+      Serial.println("RESET");
       this->step = 0;
     }
 
@@ -78,10 +93,13 @@ class StepSequence {
       if (!this->run)return;
 
       //      // get act step continuity contdition and ask
-      if (AskContinus(this->step)) {
+      if (AskContinus(this->step-1)) {
         // continuity condition satisfied, call step work and set new Step
-        TriggerCallback(this->step);
+        TriggerCallback(this->step-1);
+
         step++;
+        Serial.print("Stepp++ to:");
+        Serial.println(step);
       }
 
       // break sequens with last Step

@@ -38,30 +38,49 @@ Timer t3;
 Timer t4;
 
 void setup() {
+  //Initialize serial and wait for port to open:
   Serial.begin(9600);
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB
+  }
+
   beacon.setBrightnessInput(A5, 450, 20);
 
 
   // Sequence Step1   #######################
   sequence.add([]() { //Step1: continuity contdition
-    return t3;
+    Serial.print("ASK STEP 1/ return:");
+    Serial.println(true);
+    return true;
   }, []() {           //Step1: step work
-    t4.start(MINUTE, 0.1);
-    beacon.setState(ROTATING_GREEN);
+    Serial.println("Call work for Step 1");
+    if (t1.start(SECOND, 30));
+    beacon.setState(ON_GREEN);
   });
   // Sequence Step1   #######################
 
   // Sequence Step2   #######################
   sequence.add([]() { //Step2: continuity contdition
-    return t4;
+    Serial.print("ASK STEP 2/ return:");
+    Serial.println(t1.elapsed());
+    return t1.elapsed();
   }, []() {           //Step2: step work
-    t1.reset();
-    t2.reset();
-    t3.reset();
-    t4.reset();
-    beacon.setState(OFF);
+    Serial.println("Call work for Step 2");
+    if (t2.start(SECOND, 100));
+    beacon.setState(ROTATING_GREEN);
   });
   // Sequence Step2   #######################
+
+  // Sequence Step3   #######################
+  sequence.add([]() { //Step3: continuity contdition
+    Serial.print("ASK STEP 3/ return:");
+    Serial.println(t2.elapsed());
+    return t2.elapsed();
+  }, []() {           //Step3: step work
+    Serial.println("Call work for Step 3");
+    beacon.setState(OFF);
+  });
+  // Sequence Step3   #######################
 }
 
 
@@ -69,24 +88,8 @@ void loop() {
   beacon.loop();
   sequence.loop();
 
-  if (!t1) {
-    t1.start(MILLI, 1000);
-    beacon.setState(OFF);
-  } else {
-    if (!t2) {
-      t2.start(SECOND, 1);
-      beacon.setState(ROTATING_RED);
-    } else {
-      if (!t3) {
-        t3.start(MINUTE, 0.1);
-      } else {
-        //        t1.reset();
-        //        t2.reset();
-        //        t3.reset();
-      }
-      beacon.setState(OFF);
-//      sequence.start();
-    }
+  if (!sequence.isRunning()) {
+    Serial.println("Sequence start from Loop()");
+    sequence.start();
   }
-
 }

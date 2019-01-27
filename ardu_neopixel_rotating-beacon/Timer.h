@@ -35,8 +35,8 @@ class Timer {
       this->running = false;
     }
 
-    void start(Unit unit, double value) {
-      if (this->running) return;
+    bool start(Unit unit, double value) {
+      if (this->running) return false;
       this->running = true;
       unsigned  long now = millis();
 
@@ -57,12 +57,24 @@ class Timer {
           durationEnd = now + ((int)(value * 1000.0 * 60.0 * 60.0 * 24.0));
           break;
       }
+      return true;
+    }
+
+    bool elapsed() {
+      if (!this->running)return false;
+      unsigned  long now = millis();
+      Serial.print( "now:");
+      Serial.print( now);
+      Serial.print( "<");
+      Serial.print( durationEnd);
+      Serial.print( " = ");
+      Serial.println(now > durationEnd);
+      //      return now > durationEnd;
+      return false;
     }
 
     operator bool() const {
-      if (!this->running)return false;
-      unsigned  long now = millis();
-      return now > durationEnd;
+      return elapsed();
     }
 
 };
