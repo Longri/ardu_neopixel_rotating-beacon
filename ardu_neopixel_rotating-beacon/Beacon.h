@@ -22,12 +22,12 @@
 #include "Color.h"
 
 class Beacon {
-    NeoPixel rotatePixel;
+    RotatingPixel rotatePixel;
     BeaconState state = OFF;
 
   public:
 
-    Beacon(uint16_t numPixels, uint8_t pin, neoPixelType type, uint8_t pixelWidth): rotatePixel(NeoPixel(numPixels, pin, type, pixelWidth)) {
+    Beacon(uint16_t numPixels, uint8_t pin, neoPixelType type, uint8_t pixelWidth): rotatePixel(RotatingPixel(numPixels, pin, type, pixelWidth)) {
       rotatePixel.begin();
       Color color(5, 0, 0);
       rotatePixel.setColor(color);
@@ -40,24 +40,32 @@ class Beacon {
 
     void setState(BeaconState newState) {
       switch (newState) {
-        case OFF:
+        case BeaconState::OFF:
           Serial.println("setState OFF");
           rotatePixel.off();
           break;
-        case ROTATING_ORANGE:
-        case ROTATING_RED:
-        case ROTATING_GREEN:
-          Serial.println("setState Rotate");
+        case BeaconState::ROTATING_ORANGE:
+        case BeaconState::ROTATING_RED:
+        case BeaconState::ROTATING_GREEN:
+        case BeaconState::ROTATING_BLUE:
+          Serial.print("setState Rotate");
           rotatePixel.on();
           switch (newState) {
-            case ROTATING_ORANGE:
+            case BeaconState::ROTATING_ORANGE:
               rotatePixel.setColor(Color::ORANGE);
+              Serial.println(" Orange");
               break;
-            case ROTATING_RED:
+            case BeaconState::ROTATING_RED:
               rotatePixel.setColor(Color::RED);
+              Serial.println(" Red");
               break;
-            case ROTATING_GREEN:
+            case BeaconState::ROTATING_GREEN:
               rotatePixel.setColor(Color::GREEN);
+              Serial.println(" Green");
+              break;
+            case BeaconState::ROTATING_BLUE:
+              rotatePixel.setColor(Color::BLUE);
+              Serial.println(" Blue");
               break;
           }
           break;
@@ -72,6 +80,7 @@ class Beacon {
         case ROTATING_ORANGE:
         case ROTATING_RED:
         case ROTATING_GREEN:
+        case ROTATING_BLUE:
           rotatePixel.loop();
           break;
       }

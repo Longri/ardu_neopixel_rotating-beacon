@@ -27,7 +27,7 @@
 #ifndef ROTATING_BEACON_NEOPIXEL_H
 #define ROTATING_BEACON_NEOPIXEL_H
 
-class NeoPixel {
+class RotatingPixel {
 
     Adafruit_NeoPixel pixels;
     uint16_t numPixels;
@@ -49,8 +49,8 @@ class NeoPixel {
     float brightnessMin = 0.1f;
     float brightnessMax = 1.0f;
 
-    Color color=Color(255,0,0);
-    Color brightnesColor = Color(0,0,0);
+    Color color = Color(255, 0, 0);
+    Color brightnesColor = Color(0, 0, 0);
 
     bool ON = false;
 
@@ -93,7 +93,7 @@ class NeoPixel {
     }
 
   public:
-    NeoPixel(uint16_t numPixels, uint8_t pin, neoPixelType type, uint8_t pixelWidth)
+    RotatingPixel(uint16_t numPixels, uint8_t pin, neoPixelType type, uint8_t pixelWidth)
       : pixels(numPixels, pin, type), numPixels(numPixels), pixelWidth(pixelWidth) {}
 
     void begin() {
@@ -113,6 +113,7 @@ class NeoPixel {
 
     void setColor(Color newColor) {
       this->color = newColor;
+      brightnesColor = newColor;
     }
 
     void setRPM(float rpm) {

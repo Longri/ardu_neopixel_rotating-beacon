@@ -28,12 +28,12 @@
 //                     |   |        |               |
 Beacon beacon = Beacon(24, 9, NEO_GRB + NEO_KHZ800, 7);
 
-
-//StepSequence sequence = StepSequence();
 Timer t1;
-Timer t2;
-Timer t3;
-Timer t4;
+int arrLength;
+int step = 0;
+double second = 0.7;
+BeaconState states[] { ROTATING_ORANGE, OFF, ROTATING_RED, OFF, ROTATING_GREEN, OFF, ROTATING_BLUE, OFF};
+BeaconState actState;
 
 void setup() {
   //Initialize serial and wait for port to open:
@@ -41,29 +41,24 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB
   }
-
-  beacon.setBrightnessInput(A5, 450, 20);
-
+  //  beacon.setBrightnessInput(A5, 450, 20);
+  arrLength = sizeof(states) / sizeof(states[0]);
 }
 
 
 void loop() {
   beacon.loop();
 
-  int step = 0;
-
-  if (!t1 && !t2 && !t3 && !t4) {
-    t1.start(SECOND, 5);
-    beacon.setState(ROTATING_ORANGE);
+  if (step >= arrLength)return;
+  if (!t1 ) {
+    t1.start(SECOND, second);
+    actState = states[step];
+    beacon.setState(actState);
   }
 
-  if (t1.elapsed() && !t2 ) {
-    t2.start(SECOND, 5);
-    beacon.setState(ROTATING_RED);
+  if (t1.elapsed()  ) {
+    t1.reset();
+    step++;
   }
 
-if (t2.elapsed() && !t3 ) {
-    t3.start(SECOND, 5);
-    beacon.setState(OFF);
-  }
 }

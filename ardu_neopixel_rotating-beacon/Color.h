@@ -29,7 +29,7 @@ class Color {
 
   public:
 
-    Color(uint8_t r, uint8_t g, uint8_t b): value( ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b) {}
+    Color(uint8_t r, uint8_t g, uint8_t b): value( ((uint32_t)r << 16) | ((uint32_t)g <<  8) | (uint32_t)b) {}
 
     Color(uint32_t value): value(value) {}
 
@@ -47,16 +47,19 @@ class Color {
       return this->value;
     }
 
-    static   Color GREEN;
+    static Color GREEN;
     static Color RED;
     static Color ORANGE;
     static Color BLACK;
+    static Color BLUE;
 
 };
 
- Color Color::GREEN = Color(0, 255, 0);
- Color Color::RED = Color(255, 0, 0);
- Color Color::ORANGE = Color(255, 50, 0);
- Color Color::BLACK = Color(0, 0, 0);
+Color Color::GREEN = Color(0, 255, 0);
+Color Color::RED = Color(255, 0, 0);
+Color Color::ORANGE = Color(255, 50, 0);
+Color Color::BLACK = Color(0, 0, 0);
+Color Color::BLUE = Color(0, 0, 200);
+
 
 #endif //ROTATING_BEACON_COLOR_H
