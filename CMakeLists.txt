@@ -12,11 +12,16 @@ if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/local.properties")
     else ()
         message("Arduino upload port is set to: ${ARDU_PORT}")
     endif ()
+
+    if ("${NEOPIXEL_PATH}" STREQUAL "")
+        message(FATAL_ERROR "The file local.properties are found but the variable NEOPIXEL_PATH is not set, CMake will exit.")
+    else ()
+        message("Path to NeoPixel.h is: ${NEOPIXEL_PATH}")
+    endif ()
 else ()
     message(FATAL_ERROR "No local.properties file found. You must create this file with content set(ARDU_PORT /dev/cu.usbserial-1420) for Mac or set(ARDU_PORT com3) for Windows! CMake will exit.")
 endif ()
 
-include_directories(Blink/libraries/StandardCplusplus)
 
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/cmake/ArduinoToolchain.cmake)
@@ -38,6 +43,7 @@ set(pro.upload.speed 57600)
 
 
 include_directories(ardu_neopixel_rotating-beacon)
+include_directories(${NEOPIXEL_PATH})
 set(SOURCE_FILES
         ardu_neopixel_rotating-beacon/Adafruit_NeoPixel.cpp
         )
@@ -48,7 +54,7 @@ set(HEADERS_FILES
         ardu_neopixel_rotating-beacon/NeoPixel.h
         ardu_neopixel_rotating-beacon/State.h
         ardu_neopixel_rotating-beacon/Beacon.h
-        ardu_neopixel_rotating-beacon/Adafruit_NeoPixel.h
+        ${NEOPIXEL_PATH}/Adafruit_NeoPixel.h
         )
 set(${CMAKE_PROJECT_NAME}_HDRS ${HEADERS_FILES})
 set(${CMAKE_PROJECT_NAME}_SRCS ${SOURCE_FILES})

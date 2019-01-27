@@ -18,9 +18,7 @@
 #include "Color.h"
 #include "NeoPixel.h"
 #include "Beacon.h"
-#include "StepSequence.h"
 #include "Timer.h"
-#include "SequenceFunctionArray.h"
 
 
 //                     -  number of LED's
@@ -31,7 +29,7 @@
 Beacon beacon = Beacon(24, 9, NEO_GRB + NEO_KHZ800, 7);
 
 
-StepSequence sequence = StepSequence();
+//StepSequence sequence = StepSequence();
 Timer t1;
 Timer t2;
 Timer t3;
@@ -46,50 +44,26 @@ void setup() {
 
   beacon.setBrightnessInput(A5, 450, 20);
 
-
-  // Sequence Step1   #######################
-  sequence.add([]() { //Step1: continuity contdition
-    Serial.print("ASK STEP 1/ return:");
-    Serial.println(true);
-    return true;
-  }, []() {           //Step1: step work
-    Serial.println("Call work for Step 1");
-    if (t1.start(SECOND, 30));
-    beacon.setState(ON_GREEN);
-  });
-  // Sequence Step1   #######################
-
-  // Sequence Step2   #######################
-  sequence.add([]() { //Step2: continuity contdition
-    Serial.print("ASK STEP 2/ return:");
-    Serial.println(t1.elapsed());
-    return t1.elapsed();
-  }, []() {           //Step2: step work
-    Serial.println("Call work for Step 2");
-    if (t2.start(SECOND, 100));
-    beacon.setState(ROTATING_GREEN);
-  });
-  // Sequence Step2   #######################
-
-  // Sequence Step3   #######################
-  sequence.add([]() { //Step3: continuity contdition
-    Serial.print("ASK STEP 3/ return:");
-    Serial.println(t2.elapsed());
-    return t2.elapsed();
-  }, []() {           //Step3: step work
-    Serial.println("Call work for Step 3");
-    beacon.setState(OFF);
-  });
-  // Sequence Step3   #######################
 }
 
 
 void loop() {
   beacon.loop();
-  sequence.loop();
 
-  if (!sequence.isRunning()) {
-    Serial.println("Sequence start from Loop()");
-    sequence.start();
+  int step = 0;
+
+  if (!t1 && !t2 && !t3 && !t4) {
+    t1.start(SECOND, 5);
+    beacon.setState(ROTATING_ORANGE);
+  }
+
+  if (t1.elapsed() && !t2 ) {
+    t2.start(SECOND, 5);
+    beacon.setState(ROTATING_RED);
+  }
+
+if (t2.elapsed() && !t3 ) {
+    t3.start(SECOND, 5);
+    beacon.setState(OFF);
   }
 }

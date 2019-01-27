@@ -60,7 +60,7 @@ class Timer {
       return true;
     }
 
-    bool elapsed() {
+    bool elapsed() const {
       if (!this->running)return false;
       unsigned  long now = millis();
       Serial.print( "now:");
@@ -69,12 +69,12 @@ class Timer {
       Serial.print( durationEnd);
       Serial.print( " = ");
       Serial.println(now > durationEnd);
-      //      return now > durationEnd;
-      return false;
+         return now > durationEnd;
+//      return false;
     }
 
     operator bool() const {
-      return elapsed();
+      return this->running;
     }
 
 };

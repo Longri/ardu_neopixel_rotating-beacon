@@ -15,7 +15,7 @@
    Created by Longri on 14.01.2019.
 */
 
-#include "Adafruit_NeoPixel.h"
+#include <Adafruit_NeoPixel.h>
 #include "Color.h"
 #include "DoubleAnimator.h"
 

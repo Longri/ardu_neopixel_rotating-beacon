@@ -18,9 +18,7 @@
 #define ROTATING_BEACON_STTEPSEQUENCE_H
 
 
-#include "SequenceFunctionArray.h"
 #include "Timer.h"
-#include <Function.h>
 
 
 
@@ -44,7 +42,7 @@ class StepSequence {
       }
     }
 
-    typedef bool (*ContinusFuncPtr)();
+    typedef void (*ContinusFuncPtr)(bool&);
     volatile ContinusFuncPtr  continusFunktions[10];
 
 
@@ -54,7 +52,8 @@ class StepSequence {
     bool AskContinus(int idx) {
       if (continusFunktions[idx]) {
         ContinusFuncPtr ptr = continusFunktions[idx];
-        bool continusResult =  ptr();
+        bool continusResult;
+        ptr(continusResult);
         Serial.print("AskContinus result for Step:");
         Serial.print(idx);
         Serial.print(" is:");
