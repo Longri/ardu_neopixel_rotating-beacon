@@ -27,6 +27,10 @@
 #ifndef ROTATING_BEACON_NEOPIXEL_H
 #define ROTATING_BEACON_NEOPIXEL_H
 
+enum RotatingState {
+  ON, OFF, ROTATE
+};
+
 class RotatingPixel {
 
     Adafruit_NeoPixel pixels;
@@ -52,7 +56,7 @@ class RotatingPixel {
     Color color = Color(255, 0, 0);
     Color brightnesColor = Color(0, 0, 0);
 
-    bool ON = false;
+    RotatingState state = RotatingState::OFF;
 
     float linearInterpolation(float min, float max, float min2, float max2, float value) {
       float range1 = max - min;
@@ -78,7 +82,7 @@ class RotatingPixel {
     }
 
 
-    void calculateBrightness() {
+    bool calculateBrightness() {
       int analogValue = analogRead(brightnessPin);
       float brightness = linearInterpolation( min, max, 0, 1, analogValue );
 
@@ -89,7 +93,9 @@ class RotatingPixel {
         int8_t g = ((color & 0xff00) >> 8) * brightness;
         int8_t b = (color & 0xff) * brightness;
         brightnesColor = Color(r, g, b);
+        return true;
       }
+      return false;
     }
 
   public:
@@ -100,12 +106,19 @@ class RotatingPixel {
       pixels.begin();
     }
 
+    void rotate() {
+      state = RotatingState::ROTATE;
+    }
+
     void on() {
-      ON = true;
+      state = RotatingState::ON;
+      pixels.clear();
+      pixels.fill(brightnesColor);
+      pixels.show();
     }
 
     void off() {
-      ON = false;
+      state = RotatingState::OFF;
       pixels.clear();
       pixels.show();
 
@@ -114,6 +127,11 @@ class RotatingPixel {
     void setColor(Color newColor) {
       this->color = newColor;
       brightnesColor = newColor;
+      if (state == RotatingState::ON) {
+        pixels.clear();
+        pixels.fill(brightnesColor);
+        pixels.show();
+      }
     }
 
     void setRPM(float rpm) {
@@ -128,26 +146,45 @@ class RotatingPixel {
 
 
     void loop() {
+      if (state == RotatingState::OFF)return;
       if (calculateDeltaTime())return;
-      if (brightnessPin >= 0)calculateBrightness();
-
-      if (animator.isFinish()) {
-        animator.begin(duration, 0.0, 360.0); //one rotate (0 to 360 degrese) at 2 sec;
+      bool brightnessChanged = false;
+      if (brightnessPin >= 0) {
+        brightnessChanged = calculateBrightness();
       }
-      animator.update(loopDeltaTime);
-      dev = 360.0 / animator.getAct();
-      firstPixel = (uint16_t)numPixels / dev;
 
-      if (lastFirstPixel == firstPixel)return;
+      switch (state) {
+        case RotatingState::OFF:
+          return;
 
-      //clear all Pixels
-      pixels.clear();
+        case RotatingState::ROTATE:
+          if (animator.isFinish()) {
+            animator.begin(duration, 0.0, 360.0); //one rotate (0 to 360 degrese) at 2 sec;
+          }
+          animator.update(loopDeltaTime);
+          dev = 360.0 / animator.getAct();
+          firstPixel = (uint16_t)numPixels / dev;
 
-      for (uint16_t i = 0; i < pixelWidth; i++) {
-        int8_t pixel = firstPixel - i;
-        if (pixel < 0)pixel += numPixels;
-        pixels.setPixelColor(pixel, this->brightnesColor);
+          if (lastFirstPixel == firstPixel)return;
+
+          //clear all Pixels
+          pixels.clear();
+
+          for (uint16_t i = 0; i < pixelWidth; i++) {
+            int8_t pixel = firstPixel - i;
+            if (pixel < 0)pixel += numPixels;
+            pixels.setPixelColor(pixel, this->brightnesColor);
+          }
+          break;
+
+        case RotatingState::ON:
+          if (brightnessChanged) {
+            pixels.fill(this->brightnesColor);
+          }
+          break;
       }
+
+
       pixels.show(); // Durchführen der Pixel-Ansteuerung
     }
 

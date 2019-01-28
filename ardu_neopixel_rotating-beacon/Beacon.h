@@ -23,7 +23,7 @@
 
 class Beacon {
     RotatingPixel rotatePixel;
-    BeaconState state = OFF;
+    BeaconState state = BeaconState::BEACON_OFF;
 
   public:
 
@@ -40,47 +40,57 @@ class Beacon {
 
     void setState(BeaconState newState) {
       switch (newState) {
-        case BeaconState::OFF:
+        case BeaconState::BEACON_OFF:
           Serial.println("setState OFF");
           rotatePixel.off();
           break;
-        case BeaconState::ROTATING_ORANGE:
-        case BeaconState::ROTATING_RED:
-        case BeaconState::ROTATING_GREEN:
-        case BeaconState::ROTATING_BLUE:
-          Serial.print("setState Rotate");
+        case BeaconState::ON_ORANGE:
           rotatePixel.on();
-          switch (newState) {
-            case BeaconState::ROTATING_ORANGE:
-              rotatePixel.setColor(Color::ORANGE);
-              Serial.println(" Orange");
-              break;
-            case BeaconState::ROTATING_RED:
-              rotatePixel.setColor(Color::RED);
-              Serial.println(" Red");
-              break;
-            case BeaconState::ROTATING_GREEN:
-              rotatePixel.setColor(Color::GREEN);
-              Serial.println(" Green");
-              break;
-            case BeaconState::ROTATING_BLUE:
-              rotatePixel.setColor(Color::BLUE);
-              Serial.println(" Blue");
-              break;
-          }
+          rotatePixel.setColor(Color::ORANGE);
           break;
+        case BeaconState::ON_RED:
+          rotatePixel.on();
+          rotatePixel.setColor(Color::RED);
+          break;
+        case BeaconState::ON_GREEN:
+          rotatePixel.on();
+          rotatePixel.setColor(Color::GREEN);
+          break;
+        case BeaconState::ON_BLUE:
+          rotatePixel.on();
+          rotatePixel.setColor(Color::BLUE);
+          break;
+        case BeaconState::ROTATING_ORANGE:
+          rotatePixel.rotate();
+          rotatePixel.setColor(Color::ORANGE);
+          break;
+        case BeaconState::ROTATING_RED:
+          rotatePixel.rotate();
+          rotatePixel.setColor(Color::RED);
+          break;
+        case BeaconState::ROTATING_GREEN:
+          rotatePixel.rotate();
+          rotatePixel.setColor(Color::GREEN);
+          break;
+        case BeaconState::ROTATING_BLUE:
+          rotatePixel.rotate();
+          rotatePixel.setColor(Color::BLUE);
+          break;
+
       }
       this->state = newState;
     }
 
     void loop() {
       switch (this->state) {
-        case OFF:
-          return;
-        case ROTATING_ORANGE:
-        case ROTATING_RED:
-        case ROTATING_GREEN:
-        case ROTATING_BLUE:
+        case BeaconState::ROTATING_ORANGE:
+        case BeaconState::ROTATING_RED:
+        case BeaconState::ROTATING_GREEN:
+        case BeaconState::ROTATING_BLUE:
+        case BeaconState::ON_ORANGE:
+        case BeaconState::ON_RED:
+        case BeaconState::ON_GREEN:
+        case BeaconState::ON_BLUE:
           rotatePixel.loop();
           break;
       }

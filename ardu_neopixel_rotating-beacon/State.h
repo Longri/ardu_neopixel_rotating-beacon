@@ -38,7 +38,7 @@ enum BeaconState {
   ON_GREEN,
   ON_BLUE,
 
-  OFF
+  BEACON_OFF
 };
 
 #endif //ROTATING_BEACON_STATE_H
