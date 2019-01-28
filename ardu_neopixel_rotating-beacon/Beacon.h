@@ -20,10 +20,12 @@
 
 #include "State.h"
 #include "Color.h"
+#include "Timer.h"
 
 class Beacon {
     RotatingPixel rotatePixel;
     BeaconState state = BeaconState::BEACON_OFF;
+
 
   public:
 
@@ -39,44 +41,72 @@ class Beacon {
     }
 
     void setState(BeaconState newState) {
+      if ( this->state == newState)return;
       switch (newState) {
         case BeaconState::BEACON_OFF:
-          Serial.println("setState OFF");
           rotatePixel.off();
+          Serial.println("Set Beacon state: BEACON_OFF");
           break;
         case BeaconState::ON_ORANGE:
-          rotatePixel.on();
           rotatePixel.setColor(Color::ORANGE);
+          rotatePixel.on();
+          Serial.println("Set Beacon state: ON_ORANGE");
           break;
         case BeaconState::ON_RED:
-          rotatePixel.on();
           rotatePixel.setColor(Color::RED);
+          rotatePixel.on();
+          Serial.println("Set Beacon state: ON_RED");
           break;
         case BeaconState::ON_GREEN:
-          rotatePixel.on();
           rotatePixel.setColor(Color::GREEN);
+          rotatePixel.on();
+          Serial.println("Set Beacon state: ON_GREEN");
           break;
         case BeaconState::ON_BLUE:
-          rotatePixel.on();
           rotatePixel.setColor(Color::BLUE);
+          rotatePixel.on();
+          Serial.println("Set Beacon state: ON_BLUE");
           break;
         case BeaconState::ROTATING_ORANGE:
-          rotatePixel.rotate();
           rotatePixel.setColor(Color::ORANGE);
+          rotatePixel.rotate();
+          Serial.println("Set Beacon state: ROTATING_ORANGE");
           break;
         case BeaconState::ROTATING_RED:
-          rotatePixel.rotate();
           rotatePixel.setColor(Color::RED);
+          rotatePixel.rotate();
+          Serial.println("Set Beacon state: ROTATING_RED");
           break;
         case BeaconState::ROTATING_GREEN:
-          rotatePixel.rotate();
           rotatePixel.setColor(Color::GREEN);
+          rotatePixel.rotate();
+          Serial.println("Set Beacon state: ROTATING_GREEN");
           break;
         case BeaconState::ROTATING_BLUE:
-          rotatePixel.rotate();
           rotatePixel.setColor(Color::BLUE);
+          rotatePixel.rotate();
+          Serial.println("Set Beacon state: ROTATING_BLUE");
           break;
-
+        case BeaconState::SIGNAL_ORANGE:
+          rotatePixel.setColor(Color::ORANGE);
+          rotatePixel.signal();
+          Serial.println("Set Beacon state: SIGNAL_ORANGE");
+          break;
+        case BeaconState::SIGNAL_RED:
+          rotatePixel.setColor(Color::RED);
+          rotatePixel.signal();
+          Serial.println("Set Beacon state: SIGNAL_RED");
+          break;
+        case BeaconState::SIGNAL_GREEN:
+          rotatePixel.setColor(Color::GREEN);
+          rotatePixel.signal();
+          Serial.println("Set Beacon state: SIGNAL_GREEN");
+          break;
+        case BeaconState::SIGNAL_BLUE:
+          rotatePixel.setColor(Color::BLUE);
+          rotatePixel.signal();
+          Serial.println("Set Beacon state: SIGNAL_BLUE");
+          break;
       }
       this->state = newState;
     }
@@ -91,6 +121,10 @@ class Beacon {
         case BeaconState::ON_RED:
         case BeaconState::ON_GREEN:
         case BeaconState::ON_BLUE:
+        case BeaconState::SIGNAL_ORANGE:
+        case BeaconState::SIGNAL_RED:
+        case BeaconState::SIGNAL_GREEN:
+        case BeaconState::SIGNAL_BLUE:
           rotatePixel.loop();
           break;
       }

@@ -18,6 +18,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "Color.h"
 #include "DoubleAnimator.h"
+#include "Timer.h"
 
 #ifdef __AVR__
 #include <avr/power.h>
@@ -28,7 +29,7 @@
 #define ROTATING_BEACON_NEOPIXEL_H
 
 enum RotatingState {
-  ON, OFF, ROTATE
+  ON, OFF, ROTATE, SIGNAL
 };
 
 class RotatingPixel {
@@ -55,6 +56,10 @@ class RotatingPixel {
 
     Color color = Color(255, 0, 0);
     Color brightnesColor = Color(0, 0, 0);
+
+    int SIGNAL_CYCLE = 500; // ms
+    Timer t1;
+    Timer t2;
 
     RotatingState state = RotatingState::OFF;
 
@@ -108,6 +113,8 @@ class RotatingPixel {
 
     void rotate() {
       state = RotatingState::ROTATE;
+      t1.reset();
+      t2.reset();
     }
 
     void on() {
@@ -115,13 +122,26 @@ class RotatingPixel {
       pixels.clear();
       pixels.fill(brightnesColor);
       pixels.show();
+      t1.reset();
+      t2.reset();
+    }
+
+    void signal() {
+      if (!t1) {
+        state = RotatingState::SIGNAL;
+        pixels.clear();
+        pixels.fill(brightnesColor);
+        pixels.show();
+        t1.start(MILLI, SIGNAL_CYCLE);
+      }
     }
 
     void off() {
       state = RotatingState::OFF;
       pixels.clear();
       pixels.show();
-
+      t1.reset();
+      t2.reset();
     }
 
     void setColor(Color newColor) {
@@ -182,9 +202,25 @@ class RotatingPixel {
             pixels.fill(this->brightnesColor);
           }
           break;
+
+        case RotatingState::SIGNAL:
+          if (!t1) {
+            pixels.clear();
+            pixels.fill(brightnesColor);
+            t1.start(MILLI, SIGNAL_CYCLE);
+            break;
+          }
+          if (t1.elapsed() && !t2) {
+            pixels.clear();
+            t2.start(MILLI, SIGNAL_CYCLE);
+            break;
+          }
+          if (t2.elapsed()) {
+            t1.reset();
+            t2.reset();
+          }
+          break;
       }
-
-
       pixels.show(); // Durchführen der Pixel-Ansteuerung
     }
 

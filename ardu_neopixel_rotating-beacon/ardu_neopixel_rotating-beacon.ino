@@ -31,11 +31,13 @@ Beacon beacon = Beacon(24, 9, NEO_GRB + NEO_KHZ800, 7);
 Timer t1;
 int arrLength;
 int step = 0;
-double second = 1;
+double second = 3;
 BeaconState states[] { BeaconState::ROTATING_ORANGE, BeaconState::BEACON_OFF, BeaconState::ROTATING_RED, BeaconState::BEACON_OFF,
               BeaconState::ROTATING_GREEN, BeaconState::BEACON_OFF, BeaconState::ROTATING_BLUE, BeaconState::BEACON_OFF,
               BeaconState::ON_ORANGE, BeaconState::BEACON_OFF, BeaconState::ON_RED, BeaconState::BEACON_OFF,
-              BeaconState::ON_GREEN, BeaconState::BEACON_OFF, BeaconState::ON_BLUE, BeaconState::BEACON_OFF
+              BeaconState::ON_GREEN, BeaconState::BEACON_OFF, BeaconState::ON_BLUE, BeaconState::BEACON_OFF,
+              BeaconState::SIGNAL_ORANGE, BeaconState::BEACON_OFF, BeaconState::SIGNAL_RED, BeaconState::BEACON_OFF,
+              BeaconState::SIGNAL_GREEN, BeaconState::BEACON_OFF, BeaconState::SIGNAL_BLUE, BeaconState::BEACON_OFF
 };
 BeaconState actState;
 
