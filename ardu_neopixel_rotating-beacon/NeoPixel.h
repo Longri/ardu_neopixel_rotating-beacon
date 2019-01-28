@@ -29,7 +29,7 @@
 #define ROTATING_BEACON_NEOPIXEL_H
 
 enum RotatingState {
-  ON, OFF, ROTATE, SIGNAL
+  ON, OFF, ROTATE, SIGNAL, FLASH
 };
 
 class RotatingPixel {
@@ -58,8 +58,12 @@ class RotatingPixel {
     Color brightnesColor = Color(0, 0, 0);
 
     int SIGNAL_CYCLE = 500; // ms
+    int FLASH_CYCLE = 75; // ms
+    int FLASH_CYCLE_LOW = 775; // ms
     Timer t1;
     Timer t2;
+    Timer t3;
+    Timer t4;
 
     RotatingState state = RotatingState::OFF;
 
@@ -81,7 +85,7 @@ class RotatingPixel {
     bool calculateDeltaTime() {
       unsigned  long time = millis();
       loopDeltaTime = (time - lastLoopTime);
-      if (loopDeltaTime < 33.579)  return true; // 29 fps
+      if ((state != RotatingState::FLASH)&&loopDeltaTime < 33.579)  return true; // 29 fps
       lastLoopTime = time;
       return false;
     }
@@ -115,6 +119,8 @@ class RotatingPixel {
       state = RotatingState::ROTATE;
       t1.reset();
       t2.reset();
+      t3.reset();
+      t4.reset();
     }
 
     void on() {
@@ -124,6 +130,8 @@ class RotatingPixel {
       pixels.show();
       t1.reset();
       t2.reset();
+      t3.reset();
+      t4.reset();
     }
 
     void signal() {
@@ -136,12 +144,24 @@ class RotatingPixel {
       }
     }
 
+    void flash() {
+      if (!t1) {
+        state = RotatingState::FLASH;
+        pixels.clear();
+        pixels.fill(brightnesColor);
+        pixels.show();
+        t1.start(MILLI, FLASH_CYCLE);
+      }
+    }
+
     void off() {
       state = RotatingState::OFF;
       pixels.clear();
       pixels.show();
       t1.reset();
       t2.reset();
+      t3.reset();
+      t4.reset();
     }
 
     void setColor(Color newColor) {
@@ -218,6 +238,38 @@ class RotatingPixel {
           if (t2.elapsed()) {
             t1.reset();
             t2.reset();
+            t3.reset();
+            t4.reset();
+          }
+          break;
+        case RotatingState::FLASH:
+          if (!t1) {
+            pixels.clear();
+            pixels.fill(brightnesColor);
+            t1.start(MILLI, FLASH_CYCLE);
+            break;
+          }
+          if (t1.elapsed() && !t2) {
+            pixels.clear();
+            t2.start(MILLI, FLASH_CYCLE);
+            break;
+          }
+          if (t2.elapsed() && !t3) {
+            pixels.clear();
+            pixels.fill(brightnesColor);
+            t3.start(MILLI, FLASH_CYCLE);
+            break;
+          }
+          if (t3.elapsed() && !t4) {
+            pixels.clear();
+            t4.start(MILLI, FLASH_CYCLE_LOW);
+            break;
+          }
+          if (t4.elapsed()) {
+            t1.reset();
+            t2.reset();
+            t3.reset();
+            t4.reset();
           }
           break;
       }

@@ -107,27 +107,38 @@ class Beacon {
           rotatePixel.signal();
           Serial.println("Set Beacon state: SIGNAL_BLUE");
           break;
+
+
+
+
+
+        case BeaconState::FLASH_ORANGE:
+          rotatePixel.setColor(Color::ORANGE);
+          rotatePixel.flash();
+          Serial.println("Set Beacon state: FLASH_ORANGE");
+          break;
+        case BeaconState::FLASH_RED:
+          rotatePixel.setColor(Color::RED);
+          rotatePixel.flash();
+          Serial.println("Set Beacon state: FLASH_RED");
+          break;
+        case BeaconState::FLASH_GREEN:
+          rotatePixel.setColor(Color::GREEN);
+          rotatePixel.flash();
+          Serial.println("Set Beacon state: FLASH_GREEN");
+          break;
+        case BeaconState::FLASH_BLUE:
+          rotatePixel.setColor(Color::BLUE);
+          rotatePixel.flash();
+          Serial.println("Set Beacon state: FLASH_BLUE");
+          break;
+
       }
       this->state = newState;
     }
 
     void loop() {
-      switch (this->state) {
-        case BeaconState::ROTATING_ORANGE:
-        case BeaconState::ROTATING_RED:
-        case BeaconState::ROTATING_GREEN:
-        case BeaconState::ROTATING_BLUE:
-        case BeaconState::ON_ORANGE:
-        case BeaconState::ON_RED:
-        case BeaconState::ON_GREEN:
-        case BeaconState::ON_BLUE:
-        case BeaconState::SIGNAL_ORANGE:
-        case BeaconState::SIGNAL_RED:
-        case BeaconState::SIGNAL_GREEN:
-        case BeaconState::SIGNAL_BLUE:
-          rotatePixel.loop();
-          break;
-      }
+      rotatePixel.loop();
     }
 
 };
